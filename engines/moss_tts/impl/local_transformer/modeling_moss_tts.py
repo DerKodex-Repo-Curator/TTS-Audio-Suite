@@ -24,6 +24,7 @@ from transformers.masking_utils import create_causal_mask
 
 from .inference_utils import find_last_equal_C
 from .configuration_moss_tts import MossTTSDelayConfig
+from engines.moss_tts_cache_position import get_initial_cache_position
 
 import math
 import torch
@@ -313,6 +314,9 @@ class MossTTSGenerateDecoderOnlyOutput(ModelOutput):
 
 
 class CustomMixin(GenerationMixin): # TODO 待检查正确性
+    def _get_initial_cache_position(self, cur_len, device, model_kwargs):
+        return get_initial_cache_position(cur_len, device, model_kwargs)
+
     def _sample(
         self,
         input_ids: torch.LongTensor, # (B, T, 1+Nq)
